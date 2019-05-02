@@ -30,6 +30,7 @@ open class BaseButtonBarPagerTabStripViewController<ButtonBarCellType: UICollect
     public var buttonBarItemSpec: ButtonBarItemSpec<ButtonBarCellType>!
     public var changeCurrentIndex: ((_ oldCell: ButtonBarCellType?, _ newCell: ButtonBarCellType?, _ animated: Bool) -> Void)?
     public var changeCurrentIndexProgressive: ((_ oldCell: ButtonBarCellType?, _ newCell: ButtonBarCellType?, _ progressPercentage: CGFloat, _ changeCurrentIndex: Bool, _ animated: Bool) -> Void)?
+    private var shouldUpdateContent = true
 
     @IBOutlet public weak var buttonBarView: ButtonBarView!
 
@@ -143,11 +144,20 @@ open class BaseButtonBarPagerTabStripViewController<ButtonBarCellType: UICollect
     // MARK: - Public Methods
 
     open override func reloadPagerTabStripView() {
+        shouldUpdateContent = false
         super.reloadPagerTabStripView()
+        shouldUpdateContent = true
+      
         guard isViewLoaded else { return }
         buttonBarView.reloadData()
         cachedCellWidths = calculateWidths()
         buttonBarView.moveTo(index: currentIndex, animated: false, swipeDirection: .none, pagerScroll: .yes)
+    }
+  
+    open override func updateContent() {
+      guard shouldUpdateContent else { return }
+      
+      super.updateContent()
     }
 
     open func calculateStretchedCellWidths(_ minimumCellWidths: [CGFloat], suggestedStretchedCellWidth: CGFloat, previousNumberOfLargeCells: Int) -> CGFloat {
