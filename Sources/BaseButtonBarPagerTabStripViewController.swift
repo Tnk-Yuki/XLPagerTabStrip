@@ -151,6 +151,7 @@ open class BaseButtonBarPagerTabStripViewController<ButtonBarCellType: UICollect
         guard isViewLoaded else { return }
         buttonBarView.reloadData()
         cachedCellWidths = calculateWidths()
+        updateContent()
         buttonBarView.moveTo(index: currentIndex, animated: false, swipeDirection: .none, pagerScroll: .yes)
     }
   
